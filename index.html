@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fortune Casino Wheel</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
   <div class="top-title">Try your Luck</div>
   <main>
     <div class="main-content" id="main-content">
       <div class="section days-section">
-        <div class="days-panel">
+        <div class="days-panel" id="days-panel">
           <div class="day-item">Day 1</div>
           <div class="day-item">Day 2</div>
           <div class="day-item">Day 3</div>
@@ -35,6 +33,11 @@
 
           <div class="controls">
             <button class="btn" id="spinBtn">Spin</button>
+            <select id="demoSelect" class="btn">
+              <option value="A">Demo A - Bonus Money</option>
+              <option value="B">Demo B - Welcome Offers</option>
+              <option value="C">Demo C - Casino Icons</option>
+            </select>
           </div>
         </div>
       </div>   
@@ -42,15 +45,23 @@
       <div class="section empty-section"></div>
     </div>
   </main>
+
   <div class="popup" id="popup">
-        <div class="popup-content">
-          <div class="popup-title">Congratulations!</div>
-          <div class="popup-prize" id="popup-prize"></div>
-          <button class="btn" id="claimBtn">Claim</button>
-        </div>
-      </div>
+  <div class="popup-content">
+    <div class="popup-title">Congratulations!</div>
+    <div class="popup-prize" id="popup-prize"></div>
+    <button class="btn" id="claimBtn">Claim</button>
+  </div>
+</div>
+  <canvas id="fireworks-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;"></canvas>
+
+  <div class="popup" id="losing-popup">
+  <div class="popup-content">
+    <div class="popup-title">You Lose!</div>
+    <div class="popup-text">Come back and try again tomorrow.</div>
+    <button class="btn" id="closeLosingBtn">Close</button>
+  </div>
+</div>
   <script src="script.js"></script>
-
 </body>
-
 </html>
