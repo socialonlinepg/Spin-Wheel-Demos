@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fortune Casino Wheel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="top-title">Try your Luck</div>
+  <main>
+    <div class="main-content" id="main-content">
+      <div class="section days-section">
+        <div class="days-panel">
+          <div class="day-item">Day 1</div>
+          <div class="day-item">Day 2</div>
+          <div class="day-item">Day 3</div>
+          <div class="day-item">Day 4</div>
+          <div class="day-item">Day 5</div>
+          <div class="day-item">Day 6</div>
+          <div class="day-item">Day 7</div>
+        </div>
+      </div>
+
+      <div class="section wheel-section">
+        <div class="wheel-container">
+          <div class="wheel-title">Daily Wheel</div>
+          <div class="wheel-wrap" id="wheel-wrap">
+            <div class="wheel" id="wheel"></div>
+            <div class="pointer"></div>
+            <div class="hub"></div>
+          </div>
+
+          <div class="controls">
+            <button class="btn" id="spinBtn">Spin</button>
+          </div>
+        </div>
+      </div>   
+
+      <div class="section empty-section"></div>
+    </div>
+  </main>
+  <div class="popup" id="popup">
+        <div class="popup-content">
+          <div class="popup-title">Congratulations!</div>
+          <div class="popup-prize" id="popup-prize"></div>
+          <button class="btn" id="claimBtn">Claim</button>
+        </div>
+      </div>
+  <script src="script.js"></script>
+
+</body>
+
+</html>
