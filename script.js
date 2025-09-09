@@ -16,8 +16,15 @@ let fireworksAnimation;
 
 const demos = {
   A: ['$1000', '€1000', '$500', '€500', 'ZERO', '€250'],
-  B: ['🎰 Welcome', '🃏 Free Spin', 'Bonus 50$', 'Jackpot', 'Try Again', '100 Coins'],
-  C: ['🎰', '🃏', '🤑', '💰', '🎲', '⭐']
+  B: ['100% up to €500 + 200 Free Spins', '100% up to €250', '100% up to €350 + 100 Free Spins', '200% up to €300 + 40 Free Spins', '100% up to €500 Cashback', '100% up to €350 + 100 Free Spins'],
+  C: [
+    '/assets/icon1.png', 
+    '/assets/icon2.png', 
+    '/assets/icon3.png',
+    '/assets/icon1.png',
+    '/assets/icon2.png',
+    '/assets/icon3.png'
+  ]
 };
 
 const colors = ['#110b35', '#289d89'];
@@ -25,26 +32,50 @@ const colors = ['#110b35', '#289d89'];
 const dailyRewards = [
   ['$100', 'Free Spin', 'Jackpot'],
   ['€100', 'Bonus 50$', 'Try Again'],
-  ['🎰', '🃏', '💰'],
+  ['Free spin', '$25', 'Bonus €25'],
   ['$50', 'Free Spin', 'Jackpot'],
   ['€50', 'Bonus 25$', 'Try Again'],
-  ['🎲', '⭐', '💎'],
+  ['Free spin', '$25', 'Bonus €25'],
   ['$250', 'Free Spin', 'Bonus 100$']
 ];
 
-function generateWheel(sliceTexts, colorsArr = colors) {
-  const slicesCount = sliceTexts.length;
+function generateWheel(sliceItems, colorsArr = colors, isImage = false) {
+  const slicesCount = sliceItems.length;
   const degPerSlice = 360 / slicesCount;
   wheel.innerHTML = '';
   const radius = 120;
 
   for (let i = 0; i < slicesCount; i++) {
-    const textEl = document.createElement('div');
-    textEl.className = 'slice-text';
-    textEl.textContent = sliceTexts[i];
     const angle = i * degPerSlice + degPerSlice / 2;
-    textEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-90deg)`;
-    wheel.appendChild(textEl);
+
+    if (isImage) {
+      const imgEl = document.createElement('img');
+      imgEl.className = 'slice-image';
+      imgEl.src = sliceItems[i];
+      imgEl.style.width = '40px';
+      imgEl.style.height = '40px';
+      imgEl.style.objectFit = 'contain';
+      imgEl.style.position = 'absolute';
+      imgEl.style.top = '50%';
+      imgEl.style.left = '50%';
+      imgEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)`;
+
+      wheel.appendChild(imgEl);
+    } else {
+      const textEl = document.createElement('div');
+      textEl.className = 'slice-text';
+      textEl.textContent = sliceItems[i];
+
+      if (sliceItems[i].length > 25) textEl.style.fontSize = "11px";
+      else if (sliceItems[i].length > 15) textEl.style.fontSize = "13px";
+      else textEl.style.fontSize = "16px";
+
+      textEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-90deg)`;
+      textEl.style.maxWidth = "100px"; 
+      textEl.style.wordWrap = "break-word";
+
+      wheel.appendChild(textEl);
+    }
   }
 
   let gradient = '';
@@ -53,6 +84,7 @@ function generateWheel(sliceTexts, colorsArr = colors) {
   }
   wheel.style.background = `conic-gradient(${gradient.slice(0, -1)})`;
 }
+
 
 generateWheel(demos.A);
 
@@ -66,8 +98,13 @@ function updateDailyRewards() {
 updateDailyRewards();
 
 demoSelect.addEventListener('change', () => {
-  generateWheel(demos[demoSelect.value]);
+  if (demoSelect.value === 'C') {
+    generateWheel(demos.C, colors, true); 
+  } else {
+    generateWheel(demos[demoSelect.value]);
+  }
 });
+
 
 document.getElementById('spinBtn').addEventListener('click', () => {
   const sliceTexts = Array.from(wheel.querySelectorAll('.slice-text')).map(t => t.textContent);
@@ -185,45 +222,57 @@ closeLosingBtn.addEventListener('click', () => {
 });
 
 function startFireworks() {
-  const canvas = fireworksCanvas;
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  const ctx = canvas.getContext('2d');
+    const canvas = fireworksCanvas;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-  fireworks = [];
-  fireworksAnimation = requestAnimationFrame(drawFireworks);
+    fireworks = [];
+    fireworksAnimation = requestAnimationFrame(drawFireworks);
 
-  const popupRect = popup.getBoundingClientRect();
-  const offset = 150; 
+    const popupRect = popup.getBoundingClientRect();
+    const offset = 150;
 
-  const positions = [
-    { x: popupRect.left + popupRect.width / 2, y: popupRect.top - offset }, 
-    { x: popupRect.left + popupRect.width / 2, y: popupRect.bottom + offset },
-    { x: popupRect.left - offset, y: popupRect.top + popupRect.height / 2 }, 
-    { x: popupRect.right + offset, y: popupRect.top + popupRect.height / 2 } 
-  ];
+    const positions = [
+        { x: popupRect.left + popupRect.width / 2, y: popupRect.top - offset },
+        { x: popupRect.left + popupRect.width / 2, y: popupRect.bottom + offset },
+        { x: popupRect.left - offset, y: popupRect.top + popupRect.height / 2 },
+        { x: popupRect.right + offset, y: popupRect.top + popupRect.height / 2 }
+    ];
 
-  let count = 0;
-  const fwInterval = setInterval(() => {
-    const pos = positions[Math.floor(Math.random() * positions.length)];
+    let count = 0;
+    const fwInterval = setInterval(() => {
+        const pos = positions[Math.floor(Math.random() * positions.length)];
 
-    const fw = {
-      x: pos.x + (Math.random() - 0.5) * 50, 
-      y: pos.y + (Math.random() - 0.5) * 50,
-      radius: Math.random() * 3 + 2,
-      color: 'gold',
-      speedY: Math.random() * 4 + 4,
-      exploded: false,
-      particles: []
-    };
+        const firework = {
+            x: pos.x,
+            y: pos.y,
+            particles: [],
+            exploded: false
+        };
 
-    fw.targetY = fw.y - (Math.random() * 100 + 50);
-    fireworks.push(fw);
+        const particleCount = 60 + Math.floor(Math.random() * 30); 
+        for (let i = 0; i < particleCount; i++) {
+            const angle = Math.random() * 2 * Math.PI;
+            const speed = Math.random() * 8 + 5; 
+            firework.particles.push({
+                x: firework.x,
+                y: firework.y,
+                speedX: Math.cos(angle) * speed,
+                speedY: Math.sin(angle) * speed,
+                gravity: 0.08 + Math.random() * 0.05,
+                radius: Math.random() * 3 + 2, 
+                alpha: 1,
+                decay: 0.012 + Math.random() * 0.01, 
+                color: `hsl(45, 100%, ${50 + Math.random() * 20}%)`
+            });
+        }
 
-    count++;
-    if (count > 20) clearInterval(fwInterval);
-  }, 200);
+        fireworks.push(firework);
+        count++;
+        if (count > 25) clearInterval(fwInterval);
+    }, 150);
 }
+
 
 
 function createFirework(width, height) {
@@ -240,50 +289,35 @@ function createFirework(width, height) {
 }
 
 function drawFireworks() {
-  const ctx = fireworksCanvas.getContext('2d');
-  ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+    const ctx = fireworksCanvas.getContext('2d');
+    ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
 
-  fireworks.forEach((fw, index) => {
-    if (!fw.exploded) {
-      fw.y -= fw.speedY;
-      ctx.beginPath();
-      ctx.arc(fw.x, fw.y, fw.radius, 0, Math.PI * 2);
-      ctx.fillStyle = fw.color;
-      ctx.fill();
+    fireworks.forEach((fw, fIndex) => {
+        fw.particles.forEach((p, pIndex) => {
+            p.x += p.speedX;
+            p.y += p.speedY;
+            p.speedY += p.gravity;
+            p.alpha -= p.decay;
 
-      if (fw.y <= fw.targetY) {
-        fw.exploded = true;
-        for (let i = 0; i < 25; i++) {
-          fw.particles.push({
-            x: fw.x,
-            y: fw.y,
-            radius: Math.random() * 2 + 1,
-            color: 'gold',
-            speedX: (Math.random() - 0.5) * 6,
-            speedY: (Math.random() - 0.5) * 6,
-            alpha: 1
-          });
-        }
-      }
-    } else {
-      fw.particles.forEach((p) => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.alpha -= 0.03; 
-        ctx.globalAlpha = p.alpha;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-      });
-      fw.particles = fw.particles.filter(p => p.alpha > 0);
-      if (fw.particles.length === 0) fireworks.splice(index, 1);
-    }
-  });
+            ctx.globalAlpha = p.alpha;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.shadowColor = 'gold';
+            ctx.shadowBlur = 8; 
+            ctx.fill();
+        });
 
-  ctx.globalAlpha = 1;
-  fireworksAnimation = requestAnimationFrame(drawFireworks);
+        fw.particles = fw.particles.filter(p => p.alpha > 0);
+        if (fw.particles.length === 0) fireworks.splice(fIndex, 1);
+    });
+
+    ctx.globalAlpha = 1;
+    fireworksAnimation = requestAnimationFrame(drawFireworks);
 }
+
+
+
 
 function clearAnimations() {
   clearCoins();
