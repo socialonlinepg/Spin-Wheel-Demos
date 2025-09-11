@@ -1,67 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fortune Casino Wheel</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="top-title">Try your Luck</div>
   <main>
     <div class="main-content" id="main-content">
-      <div class="section days-section">
+      <div class="days-section">
+        <div class="day-indicator" id="day-indicator"></div>
         <div class="days-panel" id="days-panel">
-          <div class="day-item">Day 1</div>
-          <div class="day-item">Day 2</div>
-          <div class="day-item">Day 3</div>
-          <div class="day-item">Day 4</div>
-          <div class="day-item">Day 5</div>
-          <div class="day-item">Day 6</div>
-          <div class="day-item">Day 7</div>
+          <div class="day-item">DAY 1<br>X1</div>
+          <div class="day-item">DAY 2<br>X1.5</div>
+          <div class="day-item">DAY 3<br>X2</div>
+          <div class="day-item">DAY 4<br>X2.5</div>
+          <div class="day-item">DAY 5<br>X3</div>
+          <div class="day-item">DAY 6<br>X4</div>
+          <div class="day-item">DAY 7<br>X5</div>
         </div>
       </div>
 
+
       <div class="section wheel-section">
         <div class="wheel-container">
-          <div class="wheel-title">Daily Wheel</div>
+          <!-- <div class="wheel-title">Daily Wheel</div> -->
           <div class="wheel-wrap" id="wheel-wrap">
+            <div class="wheel-frame"></div>
             <div class="wheel" id="wheel"></div>
             <div class="pointer"></div>
             <div class="hub"></div>
           </div>
 
+
           <div class="controls">
             <button class="btn" id="spinBtn">Spin</button>
-            <select id="demoSelect" class="btn">
-              <option value="A">Demo A - Bonus Money</option>
-              <option value="B">Demo B - Welcome Offers</option>
-              <option value="C">Demo C - Casino Icons</option>
-            </select>
           </div>
         </div>
-      </div>   
+      </div>
 
-      <div class="section empty-section"></div>
+      <div class="empty-section">
+        <select class="demo-select">
+          <option value="A" selected>Demo A</option>
+          <option value="B">Demo B</option>
+          <option value="C">Demo C</option>
+        </select>
+
+        <select id="sliceCount">
+          <option value="6" selected>6</option>
+          <option value="8">8</option>
+          <option value="12">12</option>
+        </select>
+      </div>
+
     </div>
   </main>
 
   <div class="popup" id="popup">
-  <div class="popup-content">
-    <div class="popup-title">Congratulations!</div>
-    <div class="popup-prize" id="popup-prize"></div>
-    <button class="btn" id="claimBtn">Claim</button>
+    <div class="popup-content">
+      <div class="popup-logo"><img src="/assets/logo.png" alt=""></div>
+      <div class="popup-title">Congratulations!</div>
+      <div class="popup-prize" id="popup-prize"></div>
+      <button class="btn" id="claimBtn">Claim</button>
+    </div>
   </div>
-</div>
-  <canvas id="fireworks-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;"></canvas>
+  <canvas id="fireworks-canvas"
+    style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;"></canvas>
 
   <div class="popup" id="losing-popup">
-  <div class="popup-content">
-    <div class="popup-title">You Lose!</div>
-    <div class="popup-text">Come back and try again tomorrow.</div>
-    <button class="btn" id="closeLosingBtn">Close</button>
+    <div class="popup-content">
+      <div class="popup-title">You Lose!</div>
+      <div class="popup-text">Come back and try again tomorrow.</div>
+      <button class="btn" id="closeLosingBtn">Close</button>
+    </div>
   </div>
-</div>
   <script src="script.js"></script>
 </body>
+
 </html>
