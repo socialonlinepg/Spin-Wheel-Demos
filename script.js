@@ -66,13 +66,17 @@ function generateWheel(sliceItems, colorsArr = colors, isImage = false) {
       const imgEl = document.createElement('img');
       imgEl.className = 'slice-image';
       imgEl.src = sliceItems[i];
-      imgEl.style.width = (window.innerWidth <= 768 ? imgSize : 80) + 'px';
-      imgEl.style.height = (window.innerWidth <= 768 ? imgSize : 80) + 'px';
+      imgEl.style.width = (window.innerWidth <= 768 ? imgSize : 60) + 'px';
+      imgEl.style.height = (window.innerWidth <= 768 ? imgSize : 60) + 'px';
       imgEl.style.objectFit = 'contain';
       imgEl.style.position = 'absolute';
       imgEl.style.top = '50%';
       imgEl.style.left = '50%';
-      imgEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)`;
+      if (window.innerWidth <= 768) {
+        imgEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-90deg)`;
+      } else {
+        imgEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-90deg)`;
+      }
       wheel.appendChild(imgEl);
     } else {
       const textEl = document.createElement('div');
