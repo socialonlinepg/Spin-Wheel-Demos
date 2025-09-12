@@ -28,12 +28,8 @@ body {
   text-align: center;
   margin: 0;
   padding: 20px 0;
-
   color: #2b0000;
-  text-shadow:
-    0 0 5px #ffd700,
-    0 0 10px #ffd700,
-    0 0 15px #ffd700;
+  text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700, 0 0 15px #ffd700;
 }
 
 .main-content {
@@ -96,7 +92,6 @@ body {
   transition: transform 0.3s ease;
 }
 
-
 .wheel-section {
   flex: 1;
   display: flex;
@@ -149,8 +144,6 @@ body {
   box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
 }
 
-
-
 .wheel-wrap {
   position: relative;
   width: var(--wheel-size);
@@ -185,7 +178,6 @@ body {
   transform: translate(-50%, -50%);
   z-index: 1;
 }
-
 
 .slice-text {
   position: absolute;
@@ -303,7 +295,6 @@ body {
   }
 }
 
-
 .popup {
   position: fixed;
   top: 50%;
@@ -328,7 +319,7 @@ body {
   gap: 16px;
 }
 
-.popup-logo img{
+.popup-logo img {
   width: 250px;
   height: 60px;
 }
@@ -369,8 +360,6 @@ body {
   transform: scale(1.05);
   box-shadow: 0 0 40px #ffd700, 0 10px 40px rgba(255, 215, 0, 0.6);
 }
-
-
 
 #losing-popup {
   background: #330720;
@@ -464,6 +453,31 @@ body {
   }
 }
 
+.coins-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+  align-items: center;
+}
+
+.coin-item img {
+  width: 40px;
+  height: 40px;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.coin-item.disabled img {
+  opacity: 0.3;
+  filter: grayscale(100%);
+}
+
+.hidden {
+  display: none !important;
+}
+
 @media (max-width: 768px) {
   body {
     background-position: center;
@@ -532,7 +546,6 @@ body {
     height: 25px !important;
   }
 
-
   .pointer {
     width: 16px;
     height: 24px;
@@ -571,24 +584,39 @@ body {
   }
 
   .popup {
-  width: 90%;          
-  max-width: 320px;    
-  padding: 80px 16px 40px; 
-  border-radius: 12px;      
-  font-size: 14px; 
-}
+    width: 90%;
+    max-width: 320px;
+    padding: 80px 16px 40px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
 
-.popup-title {
-  font-size: 22px; 
-}
+  .popup-title {
+    font-size: 22px;
+  }
 
-.popup-prize {
-  font-size: 18px;
-}
+  .popup-prize {
+    font-size: 18px;
+  }
 
-#claimBtn {
-  width: 100px; 
-  padding: 10px 20px;
-  font-size: 14px;
-}
+  #claimBtn {
+    width: 100px;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+
+  .coins-panel {
+    flex-direction: row;      
+    flex-wrap: nowrap;      
+    justify-content: center;
+    gap: 8px;                
+    overflow-x: auto;  
+    padding: 4px 0;
+  }
+
+  .coins-panel .coin-item img {
+    width: 32px;  
+    height: 32px;
+  }
 }

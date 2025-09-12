@@ -3,13 +3,14 @@ const mainContent = document.getElementById('main-content');
 const popup = document.getElementById('popup');
 const popupPrize = document.getElementById('popup-prize');
 const claimBtn = document.getElementById('claimBtn');
-const demoSelect = document.querySelector('.demo-select'); 
-const sliceCountSelect = document.getElementById('sliceCount'); 
+const demoSelect = document.querySelector('.demo-select');
+const sliceCountSelect = document.getElementById('sliceCount');
 const daysPanel = document.getElementById('days-panel');
 const fireworksCanvas = document.getElementById('fireworks-canvas');
 const losingPopup = document.getElementById('losing-popup');
 const closeLosingBtn = document.getElementById('closeLosingBtn');
 const dayIndicator = document.getElementById('day-indicator');
+const daysTypeSelect = document.getElementById('daysType');
 
 let currentRotation = 0;
 let coinsInterval;
@@ -19,20 +20,17 @@ let currentDayIndex = 0;
 
 const demos = {
   A: ['$1000', '€1000', '$500', '€500', 'ZERO', '€250', '$250', '€350', '$350', 'ZERO', '$700', '€700'],
-  B: ['100% up to €500 + 200 Free Spins', '100% up to €250', '100% up to €350 + 100 Free Spins', '200% up to €300 + 40 Free Spins', '100% up to €500 Cashback', '100% up to €350 + 100 Free Spins', '100% up to €500 + 200 Free Spins', '100% up to €250', '100% up to €350 + 100 Free Spins', '200% up to €300 + 40 Free Spins', '100% up to €500 Cashback', '100% up to €350 + 100 Free Spins'],
+  B: [
+    '100% up to €500 + 200 Free Spins', '100% up to €250', '100% up to €350 + 100 Free Spins',
+    '200% up to €300 + 40 Free Spins', '100% up to €500 Cashback', '100% up to €350 + 100 Free Spins',
+    '100% up to €500 + 200 Free Spins', '100% up to €250', '100% up to €350 + 100 Free Spins',
+    '200% up to €300 + 40 Free Spins', '100% up to €500 Cashback', '100% up to €350 + 100 Free Spins'
+  ],
   C: [
-    '/assets/icon1.png',
-    '/assets/icon2.png',
-    '/assets/icon3.png',
-    '/assets/icon1.png',
-    '/assets/icon2.png',
-    '/assets/icon3.png',
-    '/assets/icon1.png',
-    '/assets/icon2.png',
-    '/assets/icon3.png',
-    '/assets/icon1.png',
-    '/assets/icon2.png',
-    '/assets/icon3.png'
+    '/assets/brutalcasino.png', '/assets/alexandercasino.png', '/assets/logo.png',
+    '/assets/fatboss.png', '/assets/casinoextra.png', '/assets/lucky31.png',
+    '/assets/onlinebingo.png', '/assets/alexandercasino.png', '/assets/logo.png',
+    '/assets/fatboss.png', '/assets/brutalcasino.png', '/assets/casinoextra.png'
   ]
 };
 
@@ -68,8 +66,8 @@ function generateWheel(sliceItems, colorsArr = colors, isImage = false) {
       const imgEl = document.createElement('img');
       imgEl.className = 'slice-image';
       imgEl.src = sliceItems[i];
-      imgEl.style.width = (window.innerWidth <= 768 ? imgSize : 40) + 'px';
-      imgEl.style.height = (window.innerWidth <= 768 ? imgSize : 40) + 'px';
+      imgEl.style.width = (window.innerWidth <= 768 ? imgSize : 80) + 'px';
+      imgEl.style.height = (window.innerWidth <= 768 ? imgSize : 80) + 'px';
       imgEl.style.objectFit = 'contain';
       imgEl.style.position = 'absolute';
       imgEl.style.top = '50%';
@@ -109,11 +107,19 @@ function generateWheel(sliceItems, colorsArr = colors, isImage = false) {
 
 function updateWheel() {
   const selectedDemo = demoSelect.value;
-  const slices = selectedDemo === 'C'
-    ? getSelectedSlices(demos.C)
-    : getSelectedSlices(demos[selectedDemo]);
+  const slices = selectedDemo === 'C' ? getSelectedSlices(demos.C) : getSelectedSlices(demos[selectedDemo]);
   const isImage = selectedDemo === 'C';
   generateWheel(slices, colors, isImage);
+
+  if (daysTypeSelect.value === 'coins') {
+    daysPanel.classList.add('hidden');
+    dayIndicator.classList.add('hidden');
+    document.getElementById('coins-panel').classList.remove('hidden');
+  } else {
+    daysPanel.classList.remove('hidden');
+    dayIndicator.classList.remove('hidden');
+    document.getElementById('coins-panel').classList.add('hidden');
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -123,53 +129,50 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 demoSelect.addEventListener('change', updateWheel);
-
 sliceCountSelect.addEventListener('change', updateWheel);
+daysTypeSelect.addEventListener('change', updateWheel);
 
 document.getElementById('spinBtn').addEventListener('click', () => {
   const selectedDemo = demoSelect.value;
-  const sliceItems = selectedDemo === 'C'
-    ? getSelectedSlices(demos.C)
-    : getSelectedSlices(demos[selectedDemo]);
-  const sliceElements = selectedDemo === 'C'
-    ? Array.from(wheel.querySelectorAll('.slice-image'))
-    : Array.from(wheel.querySelectorAll('.slice-text'));
-
+  const sliceItems = selectedDemo === 'C' ? getSelectedSlices(demos.C) : getSelectedSlices(demos[selectedDemo]);
   const slicesCount = sliceItems.length;
   const degPerSlice = 360 / slicesCount;
   const randomIndex = Math.floor(Math.random() * slicesCount);
   const offset = Math.random() * (degPerSlice - 2) + 1;
   const targetDeg = 360 * 5 + degPerSlice * randomIndex + offset;
   currentRotation += targetDeg;
+
   wheel.style.transition = 'transform 5s cubic-bezier(0.25, 1, 0.3, 1)';
   wheel.style.transform = `rotate(${currentRotation}deg)`;
 
   setTimeout(() => {
     const landedIndex = Math.floor(((360 - currentRotation % 360) % 360) / degPerSlice);
     const prize = sliceItems[landedIndex];
+    const isImage = prize.endsWith('.png') || prize.endsWith('.jpg') || prize.endsWith('.jpeg') || prize.endsWith('.svg');
 
-    if (selectedDemo === 'C') {
-      startCoinsFromSlice(landedIndex, () => {
-        showPopup(
-          `<img src="${prize}" style="width:60px;height:60px;object-fit:contain;">`,
-          'fireworks'
-        );
-        currentDayIndex = (currentDayIndex + 1) % 7;
-        moveDayIndicator(currentDayIndex);
-      });
-    } else {
-      if (prize === 'ZERO' || prize === 'Try Again') {
-        showLosingPopup();
+    if (!document.getElementById('coins-panel').classList.contains('hidden')) {
+      disableNextCoin();
+    }
+
+    if (prize === 'ZERO' || prize === 'Try Again') {
+      showLosingPopup();
+      return;
+    }
+
+    startCoinsFromSlice(landedIndex, () => {
+      if (isImage) {
+        showPopup(`<img src="${prize}" style="width:60px;height:60px;object-fit:contain;">`, 'fireworks');
       } else {
-        startCoinsFromSlice(landedIndex, () => {
-          showPopup(prize, 'fireworks');
+        showPopup(prize, 'fireworks');
+        if (demoSelect.value !== 'C') {
           currentDayIndex = (currentDayIndex + 1) % 7;
           moveDayIndicator(currentDayIndex);
-        });
+        }
       }
-    }
+    });
   }, 5000);
 });
+
 
 function startCoinsFromSlice(landedIndex, callback) {
   clearCoins();
@@ -185,6 +188,7 @@ function startCoinsFromSlice(landedIndex, callback) {
   coinsInterval = setInterval(() => {
     if (emitted >= coinsCount) return;
     emitted++;
+
     const coin = document.createElement('div');
     coin.className = 'coin';
     coin.style.left = `${startX}px`;
@@ -218,15 +222,32 @@ function startCoinsFromSlice(landedIndex, callback) {
   }, coinsCount * 80 + 1500);
 }
 
-function clearCoins() { clearInterval(coinsInterval); document.querySelectorAll('.coin').forEach(c => c.remove()); }
+function clearCoins() {
+  clearInterval(coinsInterval);
+  document.querySelectorAll('.coin').forEach(c => c.remove());
+}
 
+// --- Popups ---
 function showPopup(prize, type = 'coins') {
-  if (prize.includes('<img')) popupPrize.innerHTML = `You win ${prize}!`;
-  else popupPrize.textContent = `You win ${prize}!`;
+  popupPrize.innerHTML = '';
+  const wrapper = document.createElement('span');
+  wrapper.textContent = 'You win ';
+  popupPrize.appendChild(wrapper);
+
+  if (prize.startsWith('<img')) {
+    const temp = document.createElement('div');
+    temp.innerHTML = prize;
+    popupPrize.appendChild(temp.firstChild);
+  } else {
+    const textNode = document.createTextNode(prize + '!');
+    popupPrize.appendChild(textNode);
+  }
+
   popup.style.opacity = '1';
   popup.style.pointerEvents = 'auto';
   popup.style.transform = 'translate(-50%, -50%) scale(1)';
   mainContent.classList.add('blur');
+
   if (type === 'fireworks') startFireworks();
   else clearAnimations();
 }
@@ -257,6 +278,7 @@ function moveDayIndicator(dayIndex) {
   const dayItems = document.querySelectorAll('.day-item');
   const targetItem = dayItems[dayIndex];
   if (!targetItem) return;
+
   if (window.innerWidth <= 768) {
     const offset = targetItem.offsetLeft + targetItem.offsetWidth / 2 - dayIndicator.offsetWidth / 2;
     dayIndicator.style.transform = `translateX(${offset}px)`;
@@ -287,6 +309,7 @@ function startFireworks() {
     const pos = positions[Math.floor(Math.random() * positions.length)];
     const firework = { x: pos.x, y: pos.y, particles: [] };
     const particleCount = 50 + Math.floor(Math.random() * 30);
+
     for (let i = 0; i < particleCount; i++) {
       const angle = Math.random() * 2 * Math.PI;
       const speed = Math.random() * 3 + 2;
@@ -302,6 +325,7 @@ function startFireworks() {
         color: `hsl(45, 100%, ${50 + Math.random() * 20}%)`
       });
     }
+
     fireworks.push(firework);
     count++;
     if (count > 25) clearInterval(fwInterval);
@@ -311,8 +335,9 @@ function startFireworks() {
 function drawFireworks() {
   const ctx = fireworksCanvas.getContext('2d');
   ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+
   fireworks.forEach((fw, fIndex) => {
-    fw.particles.forEach((p) => {
+    fw.particles.forEach(p => {
       p.x += p.speedX;
       p.y += p.speedY;
       p.speedY += p.gravity;
@@ -326,9 +351,11 @@ function drawFireworks() {
       ctx.shadowBlur = 8;
       ctx.fill();
     });
+
     fw.particles = fw.particles.filter(p => p.alpha > 0);
     if (fw.particles.length === 0) fireworks.splice(fIndex, 1);
   });
+
   ctx.globalAlpha = 1;
   fireworksAnimation = requestAnimationFrame(drawFireworks);
 }
@@ -339,4 +366,12 @@ function clearAnimations() {
   fireworks = [];
   const ctx = fireworksCanvas.getContext('2d');
   ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+}
+
+function disableNextCoin() {
+  const coins = document.querySelectorAll('#coins-panel .coin-item.active');
+  if (coins.length > 0) {
+    coins[0].classList.remove('active');
+    coins[0].classList.add('disabled');
+  }
 }
